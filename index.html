@@ -1,0 +1,77 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <title>Notebook</title>
+</head>
+
+<body>
+    <!-- Include the library in the page -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/marked"></script>
+    <script src="https://unpkg.com/moment"></script>
+    <!-- notebook app     -->
+    <div id="notebook">
+        <!-- side-bar -->
+        <aside class="side-bar">
+            <div class="toolbar">
+                <button :title="addButtonTitle" @click="addNote">
+                    <i class="material-icons">add</i>Add note
+                </button>
+            </div>
+            <div class="notes">
+                <div class="note" v-for="(note, index) in sortedNotes" :key="index" @click="selectNote(note)"
+                    :class="{selected: note === selectedNote}">
+                    <i class="icon material-icons" v-if="note.favorite">star</i>
+                    {{ note.title }}
+                </div>
+            </div>
+        </aside>
+        <template v-if="selectedNote">
+            <!-- Main pane -->
+            <section class="main">
+                <div class="toolbar">
+                    <input v-model="selectedNote.title" placeholder="Note title">
+                    <button @click="removeNote" title="Remove note">
+                        <i class="material-icons">delete</i>
+                    </button>
+                    <button @click="favoriteNote" title="Favorite note">
+                        <i class="material-icons">
+                            {{ selectedNote.favorite ? 'star' : 'star_border' }}
+                        </i>
+                    </button>
+                </div>
+                <textarea v-model="selectedNote.content"></textarea>
+                <div class="toolbar status-bar">
+                    <span class="date">
+                        <span class="label">Created</span>
+                        <span class="value">{{ selectedNote.created | date }}</span>
+                    </span>
+                    <span class="lines">
+                        <span class="label"> | Lines</span>
+                        <span class="value">{{ linesCount }}</span>
+                    </span>
+                    <span class="words">
+                        <span class="label"> | Words</span>
+                        <span class="value">{{ wordsCount }}</span>
+                    </span>
+                    <span class="characters">
+                        <span class="label"> | Characters</span>
+                        <span class="value">{{ charactersCount }}</span>
+                    </span>
+                </div>
+            </section>
+
+            <!-- Preview pana -->
+            <aside class="preview" v-html="notePreview"></aside>
+        </template>
+    </div>
+    <!-- Some script -->
+    <script src="script.js"></script>
+</body>
+
+</html>
